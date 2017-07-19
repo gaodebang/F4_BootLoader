@@ -1,0 +1,177 @@
+L 1 "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c"
+N/*
+N*********************************************************************************************************
+N*	内核异常中断服务程序
+N*********************************************************************************************************
+N*/
+N
+N/*
+N*********************************************************************************************************
+N*	函 数 名: NMI_Handler
+N*	功能说明: 不可屏蔽中断服务程序。
+N*	形    参: 无
+N*	返 回 值: 无
+N*********************************************************************************************************
+N*/
+Nvoid NMI_Handler(void)
+N{
+N}
+N
+N/*
+N*********************************************************************************************************
+N*	函 数 名: HardFault_Handler
+N*	功能说明: 硬件故障中断服务程序。其他异常处理被关闭，而又发生了异常，则触发。
+N*			  执行异常处理时，发生了异常，则触发。复位时默认使能。
+N*	形    参: 无
+N*	返 回 值: 无
+N*********************************************************************************************************
+N*/
+Nvoid hard_fault(unsigned int * hardfault_args)
+N{
+N#if 1
+N        static unsigned int stacked_r0;
+N        static unsigned int stacked_r1;
+N        static unsigned int stacked_r2;
+N        static unsigned int stacked_r3;
+N        static unsigned int stacked_r12;
+N        static unsigned int stacked_lr;
+N        static unsigned int stacked_pc;
+N        static unsigned int stacked_psr;
+N        static unsigned int SHCSR;
+N        static unsigned char MFSR;
+N        static unsigned char BFSR;       
+N        static unsigned short int UFSR;
+N        static unsigned int HFSR;
+N        static unsigned int DFSR;
+N        static unsigned int MMAR;
+N        static unsigned int BFAR;
+N        stacked_r0 = ((unsigned long) hardfault_args[0]);
+N        stacked_r1 = ((unsigned long) hardfault_args[1]);
+N        stacked_r2 = ((unsigned long) hardfault_args[2]);
+N        stacked_r3 = ((unsigned long) hardfault_args[3]);
+N        stacked_r12 = ((unsigned long) hardfault_args[4]);
+N        /*异常中断发生时，这个异常模式特定的物理R14,即lr被设置成该异常模式将要返回的地址*/
+N        stacked_lr = ((unsigned long) hardfault_args[5]);   		// 即为错误发生时前次执行语句
+N        stacked_pc = ((unsigned long) hardfault_args[6]);
+N        stacked_psr = ((unsigned long) hardfault_args[7]);
+N        SHCSR = (*((volatile unsigned long *)(0xE000ED24))); 		//系统Handler控制及状态寄存器
+N        MFSR = (*((volatile unsigned char *)(0xE000ED28)));			//存储器管理fault状态寄存器       
+N        BFSR = (*((volatile unsigned char *)(0xE000ED29)));			//总线fault状态寄存器       
+N        UFSR = (*((volatile unsigned short int *)(0xE000ED2A)));	//用法fault状态寄存器               
+N        HFSR = (*((volatile unsigned long *)(0xE000ED2C))); 		//硬fault状态寄存器                       
+N        DFSR = (*((volatile unsigned long *)(0xE000ED30)));			//调试fault状态寄存器
+N        MMAR = (*((volatile unsigned long *)(0xE000ED34)));			//存储管理地址寄存器
+N        BFAR = (*((volatile unsigned long *)(0xE000ED38)));			//总线fault地址寄存器
+N#endif
+N
+N//		执行程序后，若发生内核错误，则程序会运行到最后的while(1)处。
+N//		此时观察相应的堆栈和故障寄存器值， stacked_lr即为故障发生时进入故障中断前pc的值，
+N//		在MDK软件调试状态下，假如stacked_lr的值为0x1A002D08，
+N//		在左下方的命令窗口输入“pc = 0x1A002D08”，回车，
+N//		即可定位发生错误的代码位置。
+N
+N  /* 当硬件失效异常发生时进入死循环 */
+N  while (1)
+N  {
+N  }
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 31 29 variable "stacked_r0"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 32 29 variable "stacked_r1"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 33 29 variable "stacked_r2"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 34 29 variable "stacked_r3"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 35 29 variable "stacked_r12"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 36 29 variable "stacked_lr"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 37 29 variable "stacked_pc"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 38 29 variable "stacked_psr"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 39 29 variable "SHCSR"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 40 30 variable "MFSR"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 41 30 variable "BFSR"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 42 35 variable "UFSR"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 43 29 variable "HFSR"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 44 29 variable "DFSR"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 45 29 variable "MMAR"  was set but never used
+W "..\..\User\bsp_stm32f4xx\stm32f4xx_it.c" 46 29 variable "BFAR"  was set but never used
+N}
+N
+N/*
+N*********************************************************************************************************
+N*	函 数 名: MemManage_Handler
+N*	功能说明: 内存管理异常中断服务程序。违反MPU设定的存储器访问规则时触发。 复位时默认未使能
+N*	形    参: 无
+N*	返 回 值: 无
+N*********************************************************************************************************
+N*/
+Nvoid MemManage_Handler(void)
+N{
+N  /* 当内存管理异常发生时进入死循环 */
+N  while (1)
+N  {
+N  }
+N}
+N
+N/*
+N*********************************************************************************************************
+N*	函 数 名: BusFault_Handler
+N*	功能说明: 总线访问异常中断服务程序。取指令、数据读写、堆栈操作出现异常。 复位时默认未使能
+N*	形    参: 无
+N*	返 回 值: 无
+N*********************************************************************************************************
+N*/
+Nvoid BusFault_Handler(void)
+N{
+N  /* 当总线异常时进入死循环 */
+N  while (1)
+N  {
+N  }
+N}
+N
+N/*
+N*********************************************************************************************************
+N*	函 数 名: UsageFault_Handler
+N*	功能说明: 用法错误中断服务程序。执行未定义指令、非对齐操作、除零时触发。 复位时默认未使能
+N*	形    参: 无
+N*	返 回 值: 无
+N*********************************************************************************************************
+N*/
+Nvoid UsageFault_Handler(void)
+N{
+N  /* 当用法异常时进入死循环 */
+N  while (1)
+N  {
+N  }
+N}
+N
+N/*
+N*********************************************************************************************************
+N*	函 数 名: SVC_Handler
+N*	功能说明: 通过SWI指令的系统服务调用中断服务程序。
+N*	形    参: 无
+N*	返 回 值: 无
+N*********************************************************************************************************
+N*/
+Nvoid SVC_Handler(void)
+N{
+N}
+N
+N/*
+N*********************************************************************************************************
+N*	函 数 名: DebugMon_Handler
+N*	功能说明: 调试监视器中断服务程序。
+N*	形    参: 无
+N*	返 回 值: 无
+N*********************************************************************************************************
+N*/
+Nvoid DebugMon_Handler(void)
+N{
+N}
+N
+N/*
+N*********************************************************************************************************
+N*	函 数 名: PendSV_Handler
+N*	功能说明: 可挂起的系统服务调用中断服务程序。
+N*	形    参: 无
+N*	返 回 值: 无
+N*********************************************************************************************************
+N*/
+Nvoid PendSV_Handler(void)
+N{
+N}

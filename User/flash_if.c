@@ -151,26 +151,23 @@ uint8_t FLASH_If_Erase(Blank_Mark flash_blank)
 uint32_t FLASH_If_Write(uint32_t FlashAddressDest, uint32_t FlashAddressSrc)
 {
 	uint32_t i = 0;
-	if(FlashAddressDest < FlashAddressSrc)
+	for (i = 0; i < APPLICATION_BACKUP_LENGTH; i++)
 	{
-		for (i = 0; i < APPLICATION_BACKUP_LENGTH; i++)
+		/* Device voltage range supposed to be [2.7V to 3.6V], the operation will
+		be done by word */  
+		if (FLASH_ProgramWord(FlashAddressDest + 4*i, *(__IO uint32_t*) (FlashAddressSrc + 4*i)) == FLASH_COMPLETE)
 		{
-			/* Device voltage range supposed to be [2.7V to 3.6V], the operation will
-			be done by word */  
-			if (FLASH_ProgramWord(FlashAddressDest + 4*i, *(__IO uint32_t*) (FlashAddressSrc + 4*i)) == FLASH_COMPLETE)
+			/* 检查写入的数据 */
+			if (*(__IO uint32_t*) (FlashAddressDest + 4*i) != *(__IO uint32_t*) (FlashAddressSrc + 4*i))
 			{
-				/* 检查写入的数据 */
-				if (*(__IO uint32_t*) (FlashAddressDest + 4*i) != *(__IO uint32_t*) (FlashAddressSrc + 4*i))
-				{
-					/* 读出的和写入的不相同 */
-					return(2);
-				}
+				/* 读出的和写入的不相同 */
+				return(2);
 			}
-			else
-			{
-				/* 向flash中写数据时发生错误 */
-				return (1);
-			}
+		}
+		else
+		{
+			/* 向flash中写数据时发生错误 */
+			return (1);
 		}
 	}
 	return (0);
